@@ -1,4 +1,4 @@
-# Base Serverless Framework Template
+# auction-service
 
 The auction-service is a serverless backend that implements an online auction platform using AWS services. Here’s what it does:
 
