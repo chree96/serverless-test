@@ -1,17 +1,11 @@
-# Codingly.io: Base Serverless Framework Template
+# Base Serverless Framework Template
 
-https://codingly.io
+The auction-service is a serverless backend that implements an online auction platform using AWS services. Here’s what it does:
 
-## What's included
-* Folder structure used consistently across our projects.
-* [serverless-pseudo-parameters plugin](https://www.npmjs.com/package/serverless-pseudo-parameters): Allows you to take advantage of CloudFormation Pseudo Parameters.
-* [serverless-bundle plugin](https://www.npmjs.com/package/serverless-pseudo-parameters): Bundler based on the serverless-webpack plugin - requires zero configuration and fully compatible with ES6/ES7 features.
+- Auction Management: Users can create auctions, view existing auctions, place bids, and upload images for auction items.
+- Bid Handling: Only higher bids are accepted, and users cannot bid on their own auctions or bid twice in a row.
+- Auction Closing: Auctions are automatically closed after a set time, and notifications are sent to sellers and winning bidders using AWS SQS.
+- AWS Integration: Uses DynamoDB for storing auction data, SQS for messaging/notifications, and S3 for storing auction item images.
+- API Endpoints: Handlers are implemented for creating auctions, placing bids, retrieving auctions, and uploading item images. Input validation is enforced on all endpoints.
 
-## Getting started
-```
-sls create --name YOUR_PROJECT_NAME --template-url https://github.com/codingly-io/sls-base
-cd YOUR_PROJECT_NAME
-npm install
-```
-
-You are ready to go!
+In summary, this service lets users run online auctions with automated closure and notification, fully managed in a serverless AWS environment.
