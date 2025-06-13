@@ -1,25 +1,13 @@
-<p align="center">
-  <img src="https://codingly-assets.s3-eu-west-1.amazonaws.com/Codingly+Logo.png" width="200px" height="200px"/>
-  </br>
-  <a href="https://codingly.io">codingly.io</a>
-  <br/>
-</p>
-<h1 align="center">Serverless Framework Auth0 Authorizer</h1>
-<p align="center">
-  <i><strong>A modern, ES6-friendly Lambda Authorizer ready for integration with Serverless Framework and Auth0.</strong></i>
-  <br/>
-  Based on the <a href="https://github.com/serverless/examples/tree/master/aws-node-auth0-custom-authorizers-api">serverless/examples/aws-node-auth0-custom-authorizers-api</a> example.
-</p>
+# auth-service
+This project provides a modern, ES6-compatible Lambda Authorizer, ready to be integrated with the Serverless Framework and Auth0. The service is based on the official Serverless example for custom authorizers with Auth0.
 
 ## Features
-
 - Test front-end application
-- Private endpoint for testing
-- Public endpoint for testing
-- ES6-friendly
+- Private endpoint to test authentication protection
+- Public endpoint to test open accessibility
+- ES6-friendly codebase
 
-## Getting started
-
+## Getting Started
 ### 1. Clone the repository (or generate a serverless project)
 ```sh
 sls create --name auth-service --template-url https://github.com/codingly-io/serverless-auth0-authorizer
@@ -27,49 +15,33 @@ cd auth-service
 ```
 
 ### 2. Install dependencies
-
 ```sh
 npm install
 ```
 
-### 3. Create `secret.pem` file
-
-This file will contain your Auth0 public certificate, used to verify tokens.
-
-Create a `secret.pem` file in the root folder of this project. Simply paste your public certificate in there.
+### 3. Create the secret.pem file
+This file must contain your Auth0 public certificate, which is required to verify JWT tokens. Create a secret.pem file in the root directory of the project and paste your public certificate inside.
 
 ### 4. Deploy the stack
-
-We need to deploy the stack in order to consume the private/public testing endpoints.
+To test both the public and private endpoints, deploy the stack:
 
 ```sh
 sls deploy -v
 ```
 
-### 5. Final test
+### 5. Final Test
+To confirm everything is working, send a POST request (using curl, Postman, etc.) to the private endpoint with a test token obtained from Auth0. Make sure to include the token in the headers like this:
 
-To make sure everything works, send a POST request (using curl, Postman etc.) to your private endpoint.
-
-You can grab a test token from Auth0. Make sure to provide your token in the headers like so:
-
-```
+Code
 "Authorization": "Bearer YOUR_TOKEN"
-```
+If everything is set up correctly, you should receive a valid response.
 
-You should be good to go!
+### Bonus: Cross-stack Authorization
+This is especially useful in a microservices architecture. For example, you can centralize authentication in this service and use it as an authorizer for other Lambda functions in the same AWS account.
 
-<hr/>
+To do so, just specify the ARN of the authorizer function in the configuration of your other functions:
 
-## Bonus: Cross-stack authorization
-
-This is very useful in a microservices setup. For example, you have an Auth Service (this service) which owns anything auth/user-related, and a bunch of other services that require user authorization.
-Fear not, it is very easy to make your authorizer work anywhere else in your AWS account.
-
-When defining your Lambdas in other services, simply define the `authorizer` as well and provide the ARN of your `auth` function (can be found in the AWS Console or via `sls info`).
-
-#### Example:
-
-```yaml
+YAML
 functions:
   someFunction:
     handler: src/handlers/someFunction.handler
@@ -78,6 +50,5 @@ functions:
           method: POST
           path: /something
           authorizer: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:sls-auth-service-draft-dev-auth
-```
 
-If everything was set up correctly, all incoming requests to your `someFunction` Lambda will first be authorized. You can find the JWT claims at `event.requestContext.authorizer`.
+If the setup is correct, all requests to the specified Lambda will be authorized using this service. JWT claims will be available in event.requestContext.authorizer.
